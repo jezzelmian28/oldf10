@@ -11,8 +11,7 @@ plugins {
     `java-test-fixtures`
     idea
     alias(libs.plugins.pluginPublishing)
-    // We use this published version of the detekt plugin to self analyse this project.
-    id("io.gitlab.arturbosch.detekt") version "1.23.1"
+    id("detekt-internal")
 }
 
 repositories {
@@ -45,7 +44,7 @@ testing {
             dependencies {
                 compileOnly("org.jetbrains:annotations:24.0.1")
                 implementation(libs.assertj)
-                implementation(testFixtures(project(":")))
+                implementation(testFixtures(project()))
             }
 
             targets {
@@ -55,6 +54,40 @@ testing {
                         val isAndroidSdkInstalled = providers.environmentVariable("ANDROID_SDK_ROOT").isPresent ||
                             providers.environmentVariable("ANDROID_HOME").isPresent
                         inputs.property("isAndroidSdkInstalled", isAndroidSdkInstalled).optional(true)
+
+                        // Manually add all project runtime dependencies. This repo is referenced from functional tests.
+                        setOf(
+                            "detekt-api",
+                            "detekt-core",
+                            "detekt-cli",
+                            "detekt-metrics",
+                            "detekt-parser",
+                            "detekt-psi-utils",
+                            "detekt-report-html",
+                            "detekt-report-md",
+                            "detekt-report-sarif",
+                            "detekt-report-txt",
+                            "detekt-report-xml",
+                            "detekt-rules",
+                            "detekt-rules-complexity",
+                            "detekt-rules-coroutines",
+                            "detekt-rules-documentation",
+                            "detekt-rules-empty",
+                            "detekt-rules-errorprone",
+                            "detekt-rules-exceptions",
+                            "detekt-rules-naming",
+                            "detekt-rules-performance",
+                            "detekt-rules-style",
+                            "detekt-tooling",
+                            "detekt-utils",
+                        ).forEach { projectName ->
+                            dependsOn(":$projectName:publishIvyPublicationToGradlePluginFunctionalTestRepository")
+                        }
+
+                        environment(
+                            "DGP_PROJECT_DEPS_REPO_PATH",
+                            layout.buildDirectory.dir("repo").get().asFile.invariantSeparatorsPath
+                        )
                     }
                 }
             }
@@ -70,13 +103,12 @@ dependencies {
     compileOnly(libs.kotlin.gradle)
     compileOnly(libs.kotlin.gradlePluginApi)
     testFixturesCompileOnly("org.jetbrains:annotations:24.0.1")
-    compileOnly("io.gitlab.arturbosch.detekt:detekt-cli:1.23.1")
+    compileOnly(projects.detektCli)
 
     testKitRuntimeOnly(libs.kotlin.gradle)
     testKitJava17RuntimeOnly(libs.android.gradle.maxSupported)
 
-    // We use this published version of the detekt-formatting to self analyse this project.
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.1")
+    detektPlugins(projects.detektFormatting)
 }
 
 gradlePlugin {
