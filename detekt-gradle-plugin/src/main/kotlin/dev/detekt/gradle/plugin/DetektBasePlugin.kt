@@ -10,8 +10,10 @@ import io.gitlab.arturbosch.detekt.internal.registerCreateBaselineTask
 import io.gitlab.arturbosch.detekt.internal.registerDetektTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.plugins.BasePlugin
 import org.gradle.api.plugins.ReportingBasePlugin
 import org.gradle.api.reporting.ReportingExtension
+import org.gradle.language.base.plugins.LifecycleBasePlugin
 import org.jetbrains.kotlin.gradle.plugin.KotlinBasePlugin
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetContainer
@@ -60,6 +62,15 @@ class DetektBasePlugin : Plugin<Project> {
             configuration.isCanBeConsumed = false
         }
 
+        val detektTask = project.tasks.register(DetektPlugin.DETEKT_TASK_NAME) {
+            it.group = "verification"
+            it.description = "Run detekt analysis on all Kotlin source sets"
+        }
+        project.plugins.withType(BasePlugin::class.java) { _ ->
+            project.tasks.named(LifecycleBasePlugin.CHECK_TASK_NAME).configure {
+                it.dependsOn(detektTask)
+            }
+        }
         project.registerSourceSetTasks(extension)
     }
 
@@ -69,7 +80,7 @@ class DetektBasePlugin : Plugin<Project> {
                 .sourceSets
                 .withType(KotlinSourceSet::class.java) { sourceSet ->
                     val taskName = "${DetektPlugin.DETEKT_TASK_NAME}${sourceSet.name.capitalize()}SourceSet"
-                    project.registerDetektTask(taskName, extension) {
+                    val detektTask = project.registerDetektTask(taskName, extension) {
                         source = sourceSet.kotlin
                         // If a baseline file is configured as input file, it must exist to be configured, otherwise the task fails.
                         // We try to find the configured baseline or alternatively a specific variant matching this task.
@@ -78,6 +89,10 @@ class DetektBasePlugin : Plugin<Project> {
                                 baseline.convention(project.layout.file(project.provider { file }))
                             }
                         description = "Run detekt analysis for ${sourceSet.name} source set"
+                    }
+
+                    project.tasks.named(DetektPlugin.DETEKT_TASK_NAME) {
+                        it.dependsOn(detektTask)
                     }
 
                     val baseLineTaskName = "${DetektPlugin.BASELINE_TASK_NAME}${sourceSet.name.capitalize()}SourceSet"
