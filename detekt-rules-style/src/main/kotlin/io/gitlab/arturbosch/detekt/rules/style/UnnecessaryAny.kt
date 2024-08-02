@@ -41,11 +41,13 @@ import org.jetbrains.kotlin.types.typeUtil.isSubtypeOf
  * list.contains(a)
  * </compliant>
  */
-@RequiresTypeResolution
-class UnnecessaryAny(config: Config) : Rule(
-    config,
-    "The `any {  }` usage is unnecessary."
-) {
+class UnnecessaryAny(config: Config) :
+    Rule(
+        config,
+        "The `any {  }` usage is unnecessary."
+    ),
+    RequiresTypeResolution {
+    override lateinit var bindingContext: BindingContext
 
     override fun visitCallExpression(expression: KtCallExpression) {
         super.visitCallExpression(expression)

@@ -7,6 +7,7 @@ import io.gitlab.arturbosch.detekt.api.RequiresTypeResolution
 import io.gitlab.arturbosch.detekt.api.Rule
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtCallExpression
+import org.jetbrains.kotlin.resolve.BindingContext
 import org.jetbrains.kotlin.resolve.calls.util.getResolvedCall
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameOrNull
 
@@ -30,11 +31,13 @@ import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameOrNull
  * </compliant>
  *
  */
-@RequiresTypeResolution
-class UseEmptyCounterpart(config: Config) : Rule(
-    config,
-    """Instantiation of an object's "empty" state should use the object's "empty" initializer."""
-) {
+class UseEmptyCounterpart(config: Config) :
+    Rule(
+        config,
+        """Instantiation of an object's "empty" state should use the object's "empty" initializer."""
+    ),
+    RequiresTypeResolution {
+    override lateinit var bindingContext: BindingContext
 
     override fun visitCallExpression(expression: KtCallExpression) {
         super.visitCallExpression(expression)

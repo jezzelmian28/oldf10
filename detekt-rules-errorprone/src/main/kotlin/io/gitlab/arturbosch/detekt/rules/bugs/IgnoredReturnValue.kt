@@ -24,6 +24,7 @@ import org.jetbrains.kotlin.psi.KtReturnExpression
 import org.jetbrains.kotlin.psi.KtValueArgument
 import org.jetbrains.kotlin.psi.psiUtil.getQualifiedExpressionForSelectorOrThis
 import org.jetbrains.kotlin.psi.psiUtil.getStrictParentOfType
+import org.jetbrains.kotlin.resolve.BindingContext
 import org.jetbrains.kotlin.resolve.BindingContext.FUNCTION
 import org.jetbrains.kotlin.resolve.bindingContextUtil.getTargetFunctionDescriptor
 import org.jetbrains.kotlin.resolve.bindingContextUtil.isUsedAsExpression
@@ -48,12 +49,14 @@ import org.jetbrains.kotlin.types.typeUtil.isUnit
  * val x = returnsValue()
  * </compliant>
  */
-@RequiresTypeResolution
 @ActiveByDefault(since = "1.21.0")
-class IgnoredReturnValue(config: Config) : Rule(
-    config,
-    "This call returns a value which is ignored"
-) {
+class IgnoredReturnValue(config: Config) :
+    Rule(
+        config,
+        "This call returns a value which is ignored"
+    ),
+    RequiresTypeResolution {
+    override lateinit var bindingContext: BindingContext
 
     @Configuration("if the rule should check only annotated methods")
     @Deprecated("Use `restrictToConfig` instead")

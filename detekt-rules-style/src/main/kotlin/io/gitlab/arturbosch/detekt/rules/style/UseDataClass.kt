@@ -43,11 +43,13 @@ import org.jetbrains.kotlin.types.KotlinType
  * class A(val b: B) : I by b
  * </compliant>
  */
-@RequiresTypeResolution
-class UseDataClass(config: Config) : Rule(
-    config,
-    "Classes that do nothing but hold data should be replaced with a data class."
-) {
+class UseDataClass(config: Config) :
+    Rule(
+        config,
+        "Classes that do nothing but hold data should be replaced with a data class."
+    ),
+    RequiresTypeResolution {
+    override lateinit var bindingContext: BindingContext
 
     @Configuration("allows to provide a list of annotations that disable this check")
     @Deprecated("Use `ignoreAnnotated` instead")

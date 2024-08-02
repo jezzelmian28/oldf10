@@ -43,12 +43,14 @@ import org.jetbrains.kotlin.resolve.descriptorUtil.isSubclassOf
  * </compliant>
  *
  */
-@RequiresTypeResolution
 @ActiveByDefault(since = "1.21.0")
-class UnreachableCatchBlock(config: Config) : Rule(
-    config,
-    "Unreachable catch block detected."
-) {
+class UnreachableCatchBlock(config: Config) :
+    Rule(
+        config,
+        "Unreachable catch block detected."
+    ),
+    RequiresTypeResolution {
+    override lateinit var bindingContext: BindingContext
 
     override fun visitCatchSection(catchClause: KtCatchClause) {
         super.visitCatchSection(catchClause)

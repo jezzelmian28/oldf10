@@ -19,19 +19,22 @@ import org.jetbrains.kotlin.psi.KtNamedFunction
 import org.jetbrains.kotlin.psi.KtParameterList
 import org.jetbrains.kotlin.psi.KtPrimaryConstructor
 import org.jetbrains.kotlin.psi.KtSecondaryConstructor
+import org.jetbrains.kotlin.resolve.BindingContext
 
 /**
  * Reports functions and constructors which have more parameters than a certain threshold.
  */
 @Suppress("ViolatesTypeResolutionRequirements")
 @ActiveByDefault(since = "1.0.0")
-@RequiresTypeResolution
-class LongParameterList(config: Config) : Rule(
-    config,
-    "The more parameters a function has the more complex it is. Long parameter lists are often " +
-        "used to control complex algorithms and violate the Single Responsibility Principle. " +
-        "Prefer functions with short parameter lists."
-) {
+class LongParameterList(config: Config) :
+    Rule(
+        config,
+        "The more parameters a function has the more complex it is. Long parameter lists are often " +
+            "used to control complex algorithms and violate the Single Responsibility Principle. " +
+            "Prefer functions with short parameter lists."
+    ),
+    RequiresTypeResolution {
+    override lateinit var bindingContext: BindingContext
 
     @Deprecated("Use `allowedFunctionParameters` and `allowedConstructorParameters` instead")
     @Configuration("number of parameters required to trigger the rule")

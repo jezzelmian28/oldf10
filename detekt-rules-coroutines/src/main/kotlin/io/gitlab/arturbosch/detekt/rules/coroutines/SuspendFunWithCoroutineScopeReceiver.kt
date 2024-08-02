@@ -45,13 +45,16 @@ import org.jetbrains.kotlin.types.typeUtil.supertypes
  * </compliant>
  *
  */
-@RequiresTypeResolution
 @Alias("SuspendFunctionOnCoroutineScope")
-class SuspendFunWithCoroutineScopeReceiver(config: Config) : Rule(
-    config,
-    "The `suspend` modifier should not be used for functions that use a CoroutinesScope as receiver. You should " +
-        "use suspend functions without the receiver or use plain functions and use coroutineScope { } instead."
-) {
+class SuspendFunWithCoroutineScopeReceiver(config: Config) :
+    Rule(
+        config,
+        "The `suspend` modifier should not be used for functions that use a CoroutinesScope as receiver. You should " +
+            "use suspend functions without the receiver or use plain functions and use coroutineScope { } instead."
+    ),
+    RequiresTypeResolution {
+    override lateinit var bindingContext: BindingContext
+
     override fun visitNamedFunction(function: KtNamedFunction) {
         checkReceiver(function)
     }

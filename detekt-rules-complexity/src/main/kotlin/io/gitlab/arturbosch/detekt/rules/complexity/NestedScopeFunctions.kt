@@ -11,6 +11,7 @@ import io.gitlab.arturbosch.detekt.api.config
 import org.jetbrains.kotlin.descriptors.CallableDescriptor
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtNamedFunction
+import org.jetbrains.kotlin.resolve.BindingContext
 import org.jetbrains.kotlin.resolve.calls.util.getResolvedCall
 
 /**
@@ -38,11 +39,13 @@ import org.jetbrains.kotlin.resolve.calls.util.getResolvedCall
  * second.c = first.b
  * </compliant>
  */
-@RequiresTypeResolution
-class NestedScopeFunctions(config: Config) : Rule(
-    config,
-    "Over-using scope functions makes code confusing, hard to read and bug prone."
-) {
+class NestedScopeFunctions(config: Config) :
+    Rule(
+        config,
+        "Over-using scope functions makes code confusing, hard to read and bug prone."
+    ),
+    RequiresTypeResolution {
+    override lateinit var bindingContext: BindingContext
 
     @Configuration("The maximum allowed depth for nested scope functions.")
     private val allowedDepth: Int by config(defaultValue = 1)
