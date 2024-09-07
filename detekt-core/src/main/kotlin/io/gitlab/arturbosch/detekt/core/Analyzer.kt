@@ -4,17 +4,19 @@ import io.github.detekt.psi.absolutePath
 import io.gitlab.arturbosch.detekt.api.CodeSmell
 import io.gitlab.arturbosch.detekt.api.CompilerResources
 import io.gitlab.arturbosch.detekt.api.Config
-import io.gitlab.arturbosch.detekt.api.CorrectableCodeSmell
 import io.gitlab.arturbosch.detekt.api.Entity
 import io.gitlab.arturbosch.detekt.api.FileProcessListener
 import io.gitlab.arturbosch.detekt.api.Finding
 import io.gitlab.arturbosch.detekt.api.Issue
+import io.gitlab.arturbosch.detekt.api.Location
 import io.gitlab.arturbosch.detekt.api.RequiresTypeResolution
 import io.gitlab.arturbosch.detekt.api.Rule
 import io.gitlab.arturbosch.detekt.api.RuleInstance
 import io.gitlab.arturbosch.detekt.api.RuleSet
 import io.gitlab.arturbosch.detekt.api.RuleSetProvider
 import io.gitlab.arturbosch.detekt.api.Severity
+import io.gitlab.arturbosch.detekt.api.SourceLocation
+import io.gitlab.arturbosch.detekt.api.TextLocation
 import io.gitlab.arturbosch.detekt.api.internal.whichDetekt
 import io.gitlab.arturbosch.detekt.api.internal.whichJava
 import io.gitlab.arturbosch.detekt.api.internal.whichOS
@@ -23,9 +25,11 @@ import io.gitlab.arturbosch.detekt.core.suppressors.isSuppressedBy
 import io.gitlab.arturbosch.detekt.core.util.isActiveOrDefault
 import io.gitlab.arturbosch.detekt.core.util.shouldAnalyzeFile
 import org.jetbrains.kotlin.config.languageVersionSettings
+import org.jetbrains.kotlin.psi.KtElement
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.resolve.BindingContext
 import org.jetbrains.kotlin.resolve.calls.smartcasts.DataFlowValueFactoryImpl
+import java.nio.file.Path
 
 internal class Analyzer(
     private val settings: ProcessingSettings,
@@ -132,7 +136,7 @@ internal class Analyzer(
                     it.entity.ktElement.isSuppressedBy(ruleInstance.id, rule.aliases, ruleInstance.ruleSetId)
                 }
                 .filterSuppressedFindings(rule, bindingContext)
-                .map { it.toIssue(ruleInstance, rule.computeSeverity()) }
+                .map { it.toIssue(ruleInstance, rule.computeSeverity(), settings.spec.projectSpec.basePath) }
         }
     }
 
@@ -180,26 +184,55 @@ private fun throwIllegalStateException(file: KtFile, error: Throwable): Nothing 
     throw IllegalStateException(message, error)
 }
 
-private fun Finding.toIssue(rule: RuleInstance, severity: Severity): Issue =
+private fun Finding.toIssue(rule: RuleInstance, severity: Severity, basePath: Path): Issue =
     when (this) {
-        is CorrectableCodeSmell -> IssueImpl(rule, entity, message, references, severity, autoCorrectEnabled)
-
-        is CodeSmell -> IssueImpl(rule, entity, message, references, severity)
+        is CodeSmell -> IssueImpl(
+            rule,
+            entity.toIssue(basePath),
+            message,
+            references.map { it.toIssue(basePath) },
+            severity,
+            suppressReasons,
+        )
 
         else -> error("wtf?")
     }
+
+private fun Entity.toIssue(basePath: Path): Issue.Entity =
+    IssueImpl.Entity(name, signature, location.toIssue(basePath), ktElement)
+
+private fun Location.toIssue(basePath: Path): Issue.Location =
+    IssueImpl.Location(source, endSource, text, basePath.relativize(path))
 
 private fun Rule.toRuleInstance(id: String, ruleSetId: RuleSet.Id): RuleInstance =
     RuleInstanceImpl(id, ruleName, ruleSetId, description)
 
 private data class IssueImpl(
     override val ruleInstance: RuleInstance,
-    override val entity: Entity,
+    override val entity: Issue.Entity,
     override val message: String,
-    override val references: List<Entity>,
+    override val references: List<Issue.Entity>,
     override val severity: Severity,
-    override val autoCorrectEnabled: Boolean = false,
-) : Issue
+    override val suppressReasons: List<String>,
+) : Issue {
+    data class Entity(
+        override val name: String,
+        override val signature: String,
+        override val location: Issue.Location,
+        override val ktElement: KtElement
+    ) : Issue.Entity
+
+    data class Location(
+        override val source: SourceLocation,
+        override val endSource: SourceLocation,
+        override val text: TextLocation,
+        override val path: Path
+    ) : Issue.Location {
+        init {
+            require(!path.isAbsolute) { "Path should be always relative" }
+        }
+    }
+}
 
 private data class RuleInstanceImpl(
     override val id: String,

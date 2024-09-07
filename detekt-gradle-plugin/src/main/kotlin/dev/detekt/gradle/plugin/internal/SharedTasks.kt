@@ -9,7 +9,6 @@ import io.gitlab.arturbosch.detekt.internal.existingVariantOrBaseFile
 import org.gradle.api.Project
 import org.gradle.api.provider.Provider
 import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode
-import org.jetbrains.kotlin.gradle.dsl.KotlinCommonOptions
 import org.jetbrains.kotlin.gradle.dsl.kotlinExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
 import org.jetbrains.kotlin.gradle.plugin.KotlinTarget
@@ -17,7 +16,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 internal fun Project.registerJvmCompilationDetektTask(
     extension: DetektExtension,
-    compilation: KotlinCompilation<KotlinCommonOptions>,
+    compilation: KotlinCompilation<*>,
     target: KotlinTarget? = null,
 ) {
     val taskSuffix = if (target != null) compilation.name + target.name.capitalize() else compilation.name
@@ -35,6 +34,7 @@ internal fun Project.registerJvmCompilationDetektTask(
         detektTask.freeCompilerArgs.convention(siblingTask.compilerOptions.freeCompilerArgs)
         detektTask.optIn.convention(siblingTask.compilerOptions.optIn)
         detektTask.noJdk.convention(siblingTask.compilerOptions.noJdk)
+        detektTask.multiPlatformEnabled.convention(siblingTask.multiPlatformEnabled)
         if (compilation.name == "main") {
             detektTask.explicitApi.convention(mapExplicitArgMode())
         }
@@ -57,7 +57,7 @@ internal fun Project.registerJvmCompilationDetektTask(
 
 internal fun Project.registerJvmCompilationCreateBaselineTask(
     extension: DetektExtension,
-    compilation: KotlinCompilation<KotlinCommonOptions>,
+    compilation: KotlinCompilation<*>,
     target: KotlinTarget? = null,
 ) {
     val taskSuffix = if (target != null) compilation.name + target.name.capitalize() else compilation.name
@@ -78,6 +78,7 @@ internal fun Project.registerJvmCompilationCreateBaselineTask(
         createBaselineTask.freeCompilerArgs.convention(siblingTask.compilerOptions.freeCompilerArgs)
         createBaselineTask.optIn.convention(siblingTask.compilerOptions.optIn)
         createBaselineTask.noJdk.convention(siblingTask.compilerOptions.noJdk)
+        createBaselineTask.multiPlatformEnabled.convention(siblingTask.multiPlatformEnabled)
         if (compilation.name == "main") {
             createBaselineTask.explicitApi.convention(mapExplicitArgMode())
         }

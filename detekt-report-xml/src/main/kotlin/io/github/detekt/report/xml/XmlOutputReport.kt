@@ -3,14 +3,10 @@ package io.github.detekt.report.xml
 import io.gitlab.arturbosch.detekt.api.Detektion
 import io.gitlab.arturbosch.detekt.api.Issue
 import io.gitlab.arturbosch.detekt.api.OutputReport
-import io.gitlab.arturbosch.detekt.api.SetupContext
-import io.gitlab.arturbosch.detekt.api.getOrNull
 import io.gitlab.arturbosch.detekt.api.internal.BuiltInOutputReport
-import java.nio.file.Path
+import io.gitlab.arturbosch.detekt.api.suppressed
 import java.util.Locale
-import kotlin.io.path.absolute
 import kotlin.io.path.invariantSeparatorsPathString
-import kotlin.io.path.relativeTo
 
 /**
  * Contains rule violations in an XML format. The report follows the structure of a Checkstyle report.
@@ -24,19 +20,14 @@ class XmlOutputReport : BuiltInOutputReport, OutputReport() {
     private val Issue.severityLabel: String
         get() = severity.name.lowercase(Locale.US)
 
-    var basePath: Path? = null
-
-    override fun init(context: SetupContext) {
-        basePath = context.getOrNull<Path>(DETEKT_OUTPUT_REPORT_BASE_PATH_KEY)?.absolute()
-    }
-
     override fun render(detektion: Detektion): String {
         val lines = ArrayList<String>()
         lines += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
         lines += "<checkstyle version=\"4.3\">"
 
         detektion.issues
-            .groupBy { basePath?.let { path -> it.location.path.relativeTo(path) } ?: it.location.path }
+            .filterNot { it.suppressed }
+            .groupBy { it.location.path }
             .forEach { (filePath, issues) ->
                 lines += "<file name=\"${filePath.invariantSeparatorsPathString.toXmlString()}\">"
                 issues.forEach {

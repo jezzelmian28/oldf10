@@ -2,13 +2,13 @@ package io.gitlab.arturbosch.detekt.rules.complexity
 
 import io.github.detekt.psi.AnnotationExcluder
 import io.gitlab.arturbosch.detekt.api.ActiveByDefault
+import io.gitlab.arturbosch.detekt.api.CodeSmell
 import io.gitlab.arturbosch.detekt.api.Config
 import io.gitlab.arturbosch.detekt.api.Configuration
 import io.gitlab.arturbosch.detekt.api.Entity
 import io.gitlab.arturbosch.detekt.api.RequiresTypeResolution
 import io.gitlab.arturbosch.detekt.api.Rule
 import io.gitlab.arturbosch.detekt.api.config
-import io.gitlab.arturbosch.detekt.api.configWithFallback
 import io.gitlab.arturbosch.detekt.rules.isOverride
 import org.jetbrains.kotlin.psi.KtAnnotated
 import org.jetbrains.kotlin.psi.KtClass
@@ -23,7 +23,6 @@ import org.jetbrains.kotlin.psi.KtSecondaryConstructor
 /**
  * Reports functions and constructors which have more parameters than a certain threshold.
  */
-@Suppress("ViolatesTypeResolutionRequirements")
 @ActiveByDefault(since = "1.0.0")
 class LongParameterList(config: Config) :
     Rule(
@@ -33,18 +32,11 @@ class LongParameterList(config: Config) :
             "Prefer functions with short parameter lists."
     ),
     RequiresTypeResolution {
-    @Deprecated("Use `allowedFunctionParameters` and `allowedConstructorParameters` instead")
-    @Configuration("number of parameters required to trigger the rule")
-    private val threshold: Int by config(DEFAULT_ALLOWED_FUNCTION_PARAMETERS)
-
-    @Suppress("DEPRECATION")
     @Configuration("number of function parameters required to trigger the rule")
-    private val allowedFunctionParameters: Int by configWithFallback(::threshold, DEFAULT_ALLOWED_FUNCTION_PARAMETERS)
+    private val allowedFunctionParameters: Int by config(DEFAULT_ALLOWED_FUNCTION_PARAMETERS)
 
-    @Suppress("DEPRECATION")
     @Configuration("number of constructor parameters required to trigger the rule")
-    private val allowedConstructorParameters: Int
-        by configWithFallback(::threshold, DEFAULT_ALLOWED_CONSTRUCTOR_PARAMETERS)
+    private val allowedConstructorParameters: Int by config(DEFAULT_ALLOWED_CONSTRUCTOR_PARAMETERS)
 
     @Configuration("ignore parameters that have a default value")
     private val ignoreDefaultParameters: Boolean by config(false)
@@ -101,9 +93,8 @@ class LongParameterList(config: Config) :
             }
 
             report(
-                ThresholdedCodeSmell(
+                CodeSmell(
                     Entity.from(parameterList),
-                    Metric(parameterNumber, maximumAllowedParameter),
                     "The $identifier($parameterPrint) has too many parameters. " +
                         "The current maximum allowed parameters are $maximumAllowedParameter."
                 )

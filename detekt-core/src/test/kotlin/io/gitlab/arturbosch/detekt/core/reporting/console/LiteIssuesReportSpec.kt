@@ -1,6 +1,6 @@
 package io.gitlab.arturbosch.detekt.core.reporting.console
 
-import io.gitlab.arturbosch.detekt.core.reporting.AutoCorrectableIssueAssert
+import io.gitlab.arturbosch.detekt.core.reporting.SuppressedIssueAssert
 import io.gitlab.arturbosch.detekt.test.TestDetektion
 import io.gitlab.arturbosch.detekt.test.TestSetupContext
 import io.gitlab.arturbosch.detekt.test.createIssue
@@ -8,10 +8,12 @@ import io.gitlab.arturbosch.detekt.test.createLocation
 import io.gitlab.arturbosch.detekt.test.createRuleInstance
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import kotlin.io.path.Path
+import kotlin.io.path.absolute
 
 class LiteIssuesReportSpec {
-
-    private val subject = LiteIssuesReport().apply { init(TestSetupContext()) }
+    private val basePath = Path("").absolute()
+    private val subject = LiteIssuesReport().apply { init(TestSetupContext(basePath = basePath)) }
 
     @Test
     fun `reports non-empty issues`() {
@@ -22,8 +24,8 @@ class LiteIssuesReportSpec {
         )
         assertThat(subject.render(detektion)).isEqualTo(
             """
-                ${location.path}:1:1: TestMessage [SpacingAfterPackageDeclaration/id]
-                ${location.path}:1:1: TestMessage [UnnecessarySafeCall]
+                ${basePath.resolve(location.path)}:1:1: TestMessage [SpacingAfterPackageDeclaration/id]
+                ${basePath.resolve(location.path)}:1:1: TestMessage [UnnecessarySafeCall]
 
             """.trimIndent()
         )
@@ -38,6 +40,6 @@ class LiteIssuesReportSpec {
     @Test
     fun `should not add auto corrected issues to report`() {
         val report = LiteIssuesReport()
-        AutoCorrectableIssueAssert.isReportNull(report)
+        SuppressedIssueAssert.isReportNull(report)
     }
 }

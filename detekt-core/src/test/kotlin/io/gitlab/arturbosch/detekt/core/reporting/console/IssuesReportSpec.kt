@@ -1,6 +1,6 @@
 package io.gitlab.arturbosch.detekt.core.reporting.console
 
-import io.gitlab.arturbosch.detekt.core.reporting.AutoCorrectableIssueAssert
+import io.gitlab.arturbosch.detekt.core.reporting.SuppressedIssueAssert
 import io.gitlab.arturbosch.detekt.core.reporting.decolorized
 import io.gitlab.arturbosch.detekt.test.TestDetektion
 import io.gitlab.arturbosch.detekt.test.TestSetupContext
@@ -9,10 +9,12 @@ import io.gitlab.arturbosch.detekt.test.createLocation
 import io.gitlab.arturbosch.detekt.test.createRuleInstance
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import kotlin.io.path.Path
+import kotlin.io.path.absolute
 
 class IssuesReportSpec {
-
-    private val subject = IssuesReport().apply { init(TestSetupContext()) }
+    private val basePath = Path("").absolute()
+    private val subject = IssuesReport().apply { init(TestSetupContext(basePath = basePath)) }
 
     @Test
     fun `has the reference content`() {
@@ -28,10 +30,10 @@ class IssuesReportSpec {
         assertThat(output).isEqualTo(
             """
                 Ruleset1
-                	TestSmell/id - [TestMessage] at ${location.path}:1:1
-                	TestSmell/id - [TestMessage] at ${location.path}:1:1
+                	TestSmell/id - [TestMessage] at ${basePath.resolve(location.path)}:1:1
+                	TestSmell/id - [TestMessage] at ${basePath.resolve(location.path)}:1:1
                 Ruleset2
-                	TestSmell/id - [TestMessage] at ${location.path}:1:1
+                	TestSmell/id - [TestMessage] at ${basePath.resolve(location.path)}:1:1
                 
             """.trimIndent()
         )
@@ -46,7 +48,7 @@ class IssuesReportSpec {
     @Test
     fun `should not add auto corrected issues to report`() {
         val report = IssuesReport()
-        AutoCorrectableIssueAssert.isReportNull(report)
+        SuppressedIssueAssert.isReportNull(report)
     }
 
     @Test

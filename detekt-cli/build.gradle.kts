@@ -2,7 +2,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 import java.io.ByteArrayOutputStream
 
 plugins {
-    id("io.github.goooler.shadow") version "8.1.8"
+    id("com.gradleup.shadow") version "8.3.0"
     id("module")
     id("application")
 }
@@ -33,7 +33,6 @@ dependencies {
     runtimeOnly(projects.detektReportHtml)
     runtimeOnly(projects.detektReportMd)
     runtimeOnly(projects.detektReportSarif)
-    runtimeOnly(projects.detektReportTxt)
     runtimeOnly(projects.detektReportXml)
 
     testImplementation(projects.detektTestUtils)

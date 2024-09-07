@@ -4,7 +4,6 @@ import io.github.detekt.test.utils.readResourceContent
 import io.gitlab.arturbosch.detekt.api.CodeSmell
 import io.gitlab.arturbosch.detekt.api.Config
 import io.gitlab.arturbosch.detekt.api.Entity
-import io.gitlab.arturbosch.detekt.api.OutputReport.Companion.DETEKT_OUTPUT_REPORT_BASE_PATH_KEY
 import io.gitlab.arturbosch.detekt.api.Rule
 import io.gitlab.arturbosch.detekt.api.RuleSet
 import io.gitlab.arturbosch.detekt.api.RuleSetProvider
@@ -13,7 +12,6 @@ import io.gitlab.arturbosch.detekt.test.TestDetektion
 import io.gitlab.arturbosch.detekt.test.TestSetupContext
 import io.gitlab.arturbosch.detekt.test.createEntity
 import io.gitlab.arturbosch.detekt.test.createIssue
-import io.gitlab.arturbosch.detekt.test.createIssueForRelativePath
 import io.gitlab.arturbosch.detekt.test.createLocation
 import io.gitlab.arturbosch.detekt.test.createRuleInstance
 import io.gitlab.arturbosch.detekt.test.yamlConfig
@@ -34,6 +32,12 @@ class SarifOutputReportSpec {
                 severity = Severity.Error
             ),
             createIssue(
+                ruleInstance = createRuleInstance("TestSmellD/id", "RuleSet1"),
+                entity = createEntity(location = createLocation(position = 1 to 1, endPosition = 2 to 3)),
+                severity = Severity.Error,
+                suppressReasons = listOf("suppress")
+            ),
+            createIssue(
                 ruleInstance = createRuleInstance("TestSmellB/id", "RuleSet2"),
                 entity = createEntity(location = createLocation(position = 3 to 5, endPosition = 3 to 5)),
                 severity = Severity.Warning
@@ -45,12 +49,13 @@ class SarifOutputReportSpec {
             )
         )
 
+        val basePath = Path("").absolute()
         val report = SarifOutputReport()
-            .apply { init(TestSetupContext()) }
+            .apply { init(TestSetupContext(basePath = basePath)) }
             .render(result)
 
         val expectedReport = readResourceContent("vanilla.sarif.json")
-            .replace("<PREFIX>", Path("").toUri().toString())
+            .replace("<BASE-URL>", basePath.toUri().toString())
 
         assertThat(report).isEqualToIgnoringWhitespace(expectedReport)
     }
@@ -65,36 +70,13 @@ class SarifOutputReportSpec {
 
         val testConfig = yamlConfig("config_with_rule_set_to_warning.yml")
 
+        val basePath = Path("").absolute()
         val report = SarifOutputReport()
-            .apply {
-                init(TestSetupContext(testConfig))
-            }
+            .apply { init(TestSetupContext(config = testConfig, basePath = basePath)) }
             .render(result)
 
         val expectedReport = readResourceContent("rule_warning.sarif.json")
-            .replace("<PREFIX>", Path("").toUri().toString())
-
-        assertThat(report).isEqualToIgnoringWhitespace(expectedReport)
-    }
-
-    @Test
-    fun `renders multiple issues with relative path`() {
-        val result = TestDetektion(
-            createIssueForRelativePath(createRuleInstance("TestSmellA/id", "RuleSet1")),
-            createIssueForRelativePath(createRuleInstance("TestSmellB/id", "RuleSet2")),
-            createIssueForRelativePath(createRuleInstance("TestSmellC/id", "RuleSet2")),
-        )
-
-        val basePath = Path("/").absolute().resolve("Users/tester/detekt/")
-        val report = SarifOutputReport()
-            .apply {
-                init(TestSetupContext(properties = mapOf(DETEKT_OUTPUT_REPORT_BASE_PATH_KEY to basePath)))
-            }
-            .render(result)
-            .stripWhitespace()
-
-        val expectedReport = readResourceContent("relative_path.sarif.json")
-            .replace("<BASE_URI>", basePath.toUri().toString())
+            .replace("<BASE-PATH>", basePath.toUri().toString())
 
         assertThat(report).isEqualToIgnoringWhitespace(expectedReport)
     }
@@ -110,5 +92,3 @@ class TestRule(config: Config = Config.empty) : Rule(config, "") {
         report(CodeSmell(Entity.atName(classOrObject), message = "Error"))
     }
 }
-
-private fun String.stripWhitespace() = replace(Regex("\\s"), "")

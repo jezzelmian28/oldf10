@@ -26,8 +26,8 @@ open class Rule(
      */
     open val ruleName: Name get() = Name(javaClass.simpleName)
 
-    var compilerResources: CompilerResources? = null
     private lateinit var _bindingContext: BindingContext
+    protected lateinit var compilerResources: CompilerResources
 
     @Suppress("UnusedReceiverParameter")
     val RequiresTypeResolution.bindingContext: BindingContext
@@ -49,7 +49,7 @@ open class Rule(
      */
     fun visitFile(
         root: KtFile,
-        compilerResources: CompilerResources? = null
+        compilerResources: CompilerResources
     ): List<Finding> {
         findings.clear()
         this.compilerResources = compilerResources

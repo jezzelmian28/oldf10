@@ -1,6 +1,3 @@
-build:
-  excludeCorrectable: false
-
 config:
   validation: true
   warningsAsErrors: false
@@ -38,7 +35,6 @@ console-reports:
 output-reports:
   active: true
   exclude:
-  # - 'TxtOutputReport'
   # - 'XmlOutputReport'
   # - 'HtmlOutputReport'
   # - 'MdOutputReport'
@@ -169,6 +165,7 @@ complexity:
     allowedFunctionsPerEnum: 11
     ignoreDeprecated: false
     ignorePrivate: false
+    ignoreInternal: false
     ignoreOverridden: false
     ignoreAnnotatedFunctions: []
 

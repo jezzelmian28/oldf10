@@ -18,7 +18,6 @@ include("detekt-psi-utils")
 include("detekt-report-html")
 include("detekt-report-md")
 include("detekt-report-sarif")
-include("detekt-report-txt")
 include("detekt-report-xml")
 include("detekt-rules")
 include("detekt-rules-complexity")
@@ -42,7 +41,7 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 enableFeaturePreview("STABLE_CONFIGURATION_CACHE")
 
 plugins {
-    id("com.gradle.develocity") version "3.17.6"
+    id("com.gradle.develocity") version "3.18"
     id("com.gradle.common-custom-user-data-gradle-plugin") version "2.0.2"
     id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
 }
@@ -69,8 +68,7 @@ buildCache {
     remote(develocity.buildCache) {
         server = "https://ge.detekt.dev"
         isEnabled = true
-        val accessKey = System.getenv("DEVELOCITY_ACCESS_KEY")
-        isPush = isCiBuild && !accessKey.isNullOrEmpty()
+        isPush = isCiBuild
     }
 }
 
