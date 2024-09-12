@@ -23,22 +23,20 @@ import org.jetbrains.kotlin.psi.KtSecondaryConstructor
 /**
  * Reports functions and constructors which have more parameters than a certain threshold.
  */
-@Suppress("ViolatesTypeResolutionRequirements")
 @ActiveByDefault(since = "1.0.0")
-@RequiresTypeResolution
-class LongParameterList(config: Config) : Rule(
-    config,
-    "The more parameters a function has the more complex it is. Long parameter lists are often " +
-        "used to control complex algorithms and violate the Single Responsibility Principle. " +
-        "Prefer functions with short parameter lists."
-) {
-
+class LongParameterList(config: Config) :
+    Rule(
+        config,
+        "The more parameters a function has the more complex it is. Long parameter lists are often " +
+            "used to control complex algorithms and violate the Single Responsibility Principle. " +
+            "Prefer functions with short parameter lists."
+    ),
+    RequiresTypeResolution {
     @Configuration("number of function parameters required to trigger the rule")
     private val allowedFunctionParameters: Int by config(DEFAULT_ALLOWED_FUNCTION_PARAMETERS)
 
     @Configuration("number of constructor parameters required to trigger the rule")
-    private val allowedConstructorParameters: Int
-        by config(DEFAULT_ALLOWED_CONSTRUCTOR_PARAMETERS)
+    private val allowedConstructorParameters: Int by config(DEFAULT_ALLOWED_CONSTRUCTOR_PARAMETERS)
 
     @Configuration("ignore parameters that have a default value")
     private val ignoreDefaultParameters: Boolean by config(false)
