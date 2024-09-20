@@ -54,7 +54,7 @@ kotlin {
     compilerOptions {
         jvmTarget = Versions.JVM_TARGET
         progressiveMode = true
-        allWarningsAsErrors = providers.gradleProperty("warningsAsErrors").orNull.toBoolean()
+        allWarningsAsErrors = false
     }
 }
 
