@@ -3,6 +3,7 @@ package io.gitlab.arturbosch.detekt.rules.complexity
 import io.gitlab.arturbosch.detekt.test.TestConfig
 import io.gitlab.arturbosch.detekt.test.assertThat
 import io.gitlab.arturbosch.detekt.test.compileAndLint
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
@@ -313,6 +314,7 @@ class TooManyFunctionsSpec {
     }
 
     @Test
+    @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
     fun `should not count functions included in ignoreAnnotatedFunctions`() {
         val rule = TooManyFunctions(
             TestConfig(
@@ -342,6 +344,7 @@ class TooManyFunctionsSpec {
     }
 
     @Test
+    @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
     fun `should trigger when there are too many non-annotated functions`() {
         val rule = TooManyFunctions(
             TestConfig(

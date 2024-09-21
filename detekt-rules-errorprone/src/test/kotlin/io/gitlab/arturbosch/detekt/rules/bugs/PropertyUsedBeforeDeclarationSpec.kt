@@ -5,6 +5,7 @@ import io.gitlab.arturbosch.detekt.rules.KotlinCoreEnvironmentTest
 import io.gitlab.arturbosch.detekt.test.assertThat
 import io.gitlab.arturbosch.detekt.test.compileAndLintWithContext
 import org.jetbrains.kotlin.cli.jvm.compiler.KotlinCoreEnvironment
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 @KotlinCoreEnvironmentTest
@@ -89,6 +90,7 @@ class PropertyUsedBeforeDeclarationSpec(private val env: KotlinCoreEnvironment) 
     }
 
     @Test
+    @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
     fun `used before declaration in nested object`() {
         val code = """
             object Outer {

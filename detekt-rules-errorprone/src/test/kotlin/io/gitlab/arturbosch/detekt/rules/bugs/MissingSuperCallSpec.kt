@@ -6,6 +6,7 @@ import io.gitlab.arturbosch.detekt.test.TestConfig
 import io.gitlab.arturbosch.detekt.test.assertThat
 import io.gitlab.arturbosch.detekt.test.compileAndLintWithContext
 import org.jetbrains.kotlin.cli.jvm.compiler.KotlinCoreEnvironment
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 @KotlinCoreEnvironmentTest
@@ -13,6 +14,7 @@ class MissingSuperCallSpec(private val env: KotlinCoreEnvironment) {
     private val subject = MissingSuperCall(Config.empty)
 
     @Test
+    @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
     fun `super method has CallSuper annotation`() {
         val code = """
             package androidx.annotation
@@ -35,6 +37,7 @@ class MissingSuperCallSpec(private val env: KotlinCoreEnvironment) {
     }
 
     @Test
+    @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
     fun `super method has OverridingMethodsMustInvokeSuper annotation`() {
         val code = """
             package javax.annotation
@@ -57,6 +60,7 @@ class MissingSuperCallSpec(private val env: KotlinCoreEnvironment) {
     }
 
     @Test
+    @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
     fun `super method has user defined annotation`() {
         val subject = MissingSuperCall(
             TestConfig("mustInvokeSuperAnnotations" to listOf("p.Ann"))
@@ -86,6 +90,7 @@ class MissingSuperCallSpec(private val env: KotlinCoreEnvironment) {
     }
 
     @Test
+    @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
     fun `super super methods has the annotation`() {
         val subject = MissingSuperCall(
             TestConfig("mustInvokeSuperAnnotations" to listOf("Ann"))
@@ -135,6 +140,7 @@ class MissingSuperCallSpec(private val env: KotlinCoreEnvironment) {
     }
 
     @Test
+    @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
     fun `overriding method calls super method`() {
         val subject = MissingSuperCall(
             TestConfig("mustInvokeSuperAnnotations" to listOf("foo.Bar"))
@@ -172,6 +178,7 @@ class MissingSuperCallSpec(private val env: KotlinCoreEnvironment) {
     }
 
     @Test
+    @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
     fun `overriding method calls super method with explicit type`() {
         val subject = MissingSuperCall(
             TestConfig("mustInvokeSuperAnnotations" to listOf("Ann"))
@@ -197,6 +204,7 @@ class MissingSuperCallSpec(private val env: KotlinCoreEnvironment) {
     }
 
     @Test
+    @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
     fun `overriding method calls another super method`() {
         val subject = MissingSuperCall(
             TestConfig("mustInvokeSuperAnnotations" to listOf("Ann"))

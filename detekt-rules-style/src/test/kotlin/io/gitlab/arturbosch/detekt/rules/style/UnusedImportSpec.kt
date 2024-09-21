@@ -6,6 +6,7 @@ import io.gitlab.arturbosch.detekt.test.compileAndLintWithContext
 import io.gitlab.arturbosch.detekt.test.lintWithContext
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.kotlin.cli.jvm.compiler.KotlinCoreEnvironment
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 @KotlinCoreEnvironmentTest
@@ -598,6 +599,7 @@ class UnusedImportSpec(val env: KotlinCoreEnvironment) {
     }
 
     @Test
+    @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
     fun `does not report when used in a class literal expression`() {
         val code = """
             import java.util.HashMap

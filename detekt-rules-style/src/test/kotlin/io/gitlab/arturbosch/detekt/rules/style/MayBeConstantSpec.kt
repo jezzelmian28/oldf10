@@ -5,6 +5,7 @@ import io.gitlab.arturbosch.detekt.api.SourceLocation
 import io.gitlab.arturbosch.detekt.test.assertThat
 import io.gitlab.arturbosch.detekt.test.compileAndLint
 import io.gitlab.arturbosch.detekt.test.lint
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
@@ -266,6 +267,7 @@ class MayBeConstantSpec {
         }
 
         @Test
+        @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
         fun `has some annotation`() {
             val code = """
                 annotation class A

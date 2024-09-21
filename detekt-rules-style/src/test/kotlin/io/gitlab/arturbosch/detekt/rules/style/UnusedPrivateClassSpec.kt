@@ -3,6 +3,7 @@ package io.gitlab.arturbosch.detekt.rules.style
 import io.gitlab.arturbosch.detekt.api.Config
 import io.gitlab.arturbosch.detekt.test.assertThat
 import io.gitlab.arturbosch.detekt.test.compileAndLint
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -391,6 +392,7 @@ class UnusedPrivateClassSpec {
         }
 
         @Test
+        @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
         fun `does not report used private annotations - #2093`() {
             val code = """
                 private annotation class Test1

@@ -7,6 +7,7 @@ import io.gitlab.arturbosch.detekt.test.assertThat
 import io.gitlab.arturbosch.detekt.test.compileAndLintWithContext
 import io.gitlab.arturbosch.detekt.test.lintWithContext
 import org.jetbrains.kotlin.cli.jvm.compiler.KotlinCoreEnvironment
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
@@ -97,6 +98,7 @@ class IgnoredReturnValueSpec {
         }
 
         @Test
+        @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
         fun `does not report when the return value is assigned to a pre-existing variable`() {
             val code = """
                 package test
@@ -228,6 +230,7 @@ class IgnoredReturnValueSpec {
         }
 
         @Test
+        @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
         fun `reports when a function which returns a value is called before a valid return`() {
             val code = """
                 package noreturn
@@ -249,6 +252,7 @@ class IgnoredReturnValueSpec {
         }
 
         @Test
+        @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
         fun `reports when a function which returns a value is called in chain as first statement and the return is ignored`() {
             val code = """
                 package noreturn
@@ -268,6 +272,7 @@ class IgnoredReturnValueSpec {
         }
 
         @Test
+        @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
         fun `does not report when a function which returns a value is called in the middle of a chain and the return is ignored`() {
             val code = """
                 package noreturn
@@ -292,6 +297,7 @@ class IgnoredReturnValueSpec {
         }
 
         @Test
+        @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
         fun `reports when a function which returns a value is called in the end of a chain and the return is ignored`() {
             val code = """
                 package noreturn
@@ -316,6 +322,7 @@ class IgnoredReturnValueSpec {
         }
 
         @Test
+        @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
         fun `reports when a function which returns a value is called before a semicolon`() {
             val code = """
                 package special
@@ -336,6 +343,7 @@ class IgnoredReturnValueSpec {
         }
 
         @Test
+        @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
         fun `reports when a function which returns a value is called after a semicolon`() {
             val code = """
                 package special
@@ -357,6 +365,7 @@ class IgnoredReturnValueSpec {
         }
 
         @Test
+        @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
         fun `reports when a function which returns a value is called between comments`() {
             val code = """
                 package special
@@ -378,6 +387,7 @@ class IgnoredReturnValueSpec {
         }
 
         @Test
+        @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
         fun `reports when an extension function which returns a value is called and the return is ignored`() {
             val code = """
                 package specialize
@@ -398,6 +408,7 @@ class IgnoredReturnValueSpec {
         }
 
         @Test
+        @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
         fun `does not report when the return value is assigned to a pre-existing variable`() {
             val code = """
                 package specialize
@@ -418,6 +429,7 @@ class IgnoredReturnValueSpec {
         }
 
         @Test
+        @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
         fun `does not report when a function which doesn't return a value is called`() {
             val code = """
                 package specialize
@@ -437,6 +449,7 @@ class IgnoredReturnValueSpec {
         }
 
         @Test
+        @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
         fun `does not report when a function's return value is used in a test statement`() {
             val code = """
                 package comparison
@@ -455,6 +468,7 @@ class IgnoredReturnValueSpec {
         }
 
         @Test
+        @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
         fun `does not report when a function's return value is used in a comparison`() {
             val code = """
                 package comparison
@@ -473,6 +487,7 @@ class IgnoredReturnValueSpec {
         }
 
         @Test
+        @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
         fun `does not report when a function's return value is used as parameter for another call`() {
             val code = """
                 package parameter
@@ -491,6 +506,7 @@ class IgnoredReturnValueSpec {
         }
 
         @Test
+        @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
         fun `does not report when a function's return value is used with named parameters`() {
             val code = """
                 package parameter
@@ -509,6 +525,7 @@ class IgnoredReturnValueSpec {
         }
 
         @Test
+        @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
         fun `does not report when a function is the last statement in a block and it's used`() {
             val code = """
                 package block
@@ -529,6 +546,7 @@ class IgnoredReturnValueSpec {
         }
 
         @Test
+        @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
         fun `report when a function is not the last statement in a 'if' block and 'if' block is used`() {
             val code = """
                 package block
@@ -550,6 +568,7 @@ class IgnoredReturnValueSpec {
         }
 
         @Test
+        @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
         fun `does not report when a function is the last statement in a block and it's in a chain`() {
             val code = """
                 package block
@@ -572,6 +591,7 @@ class IgnoredReturnValueSpec {
         }
 
         @Test
+        @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
         fun `report when a function is not the last statement in a block and it's in a chain`() {
             val code = """
                 package block
@@ -595,6 +615,7 @@ class IgnoredReturnValueSpec {
         }
 
         @Test
+        @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
         fun `report when a function is the last statement in a block`() {
             val code = """
                 package block
@@ -617,6 +638,7 @@ class IgnoredReturnValueSpec {
         }
 
         @Test
+        @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
         fun `does not report when a function return value is consumed in a chain that returns a Unit`() {
             val code = """
                 package callchain
@@ -641,6 +663,7 @@ class IgnoredReturnValueSpec {
         }
 
         @Test
+        @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
         fun `does not report when a function's return value is assigned to set`() {
             val code = """
                 annotation class CheckReturnValue
@@ -659,6 +682,7 @@ class IgnoredReturnValueSpec {
         }
 
         @Test
+        @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
         fun `reports when the containing class of a function has _@CheckReturnValue_`() {
             val code = """
                 package foo
@@ -679,6 +703,7 @@ class IgnoredReturnValueSpec {
         }
 
         @Test
+        @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
         fun `reports when the containing object of a function has _@CheckReturnValue_`() {
             val code = """
                 package foo
@@ -699,6 +724,7 @@ class IgnoredReturnValueSpec {
         }
 
         @Test
+        @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
         fun `does not report when the containing class of a function has _@CheckReturnValue_ but the function has _@CanIgnoreReturnValue_`() {
             val code = """
                 package foo
@@ -721,6 +747,7 @@ class IgnoredReturnValueSpec {
         }
 
         @Test
+        @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
         fun `does not report when the containing class of a function has no _@CheckReturnValue_ but the parent class has _@CheckReturnValue_`() {
             val code = """
                 package foo
@@ -743,6 +770,7 @@ class IgnoredReturnValueSpec {
         }
 
         @Test
+        @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
         fun `reports ignored return value in lambda of 'with' function`() {
             val code = """
                 fun test(db: Database, sql: String) {
@@ -777,6 +805,7 @@ class IgnoredReturnValueSpec {
         }
 
         @Test
+        @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
         fun `reports ignored return value in lambda of 'run' function`() {
             val code = """
                 fun test(db: Database, sql: String) {
@@ -801,6 +830,7 @@ class IgnoredReturnValueSpec {
         }
 
         @Test
+        @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
         fun `reports ignored return value in lambda of 'let' function`() {
             val code = """
                  fun test(db: Database, sql: String) {
@@ -833,6 +863,7 @@ class IgnoredReturnValueSpec {
         )
 
         @Test
+        @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
         fun `reports when a function is annotated with the custom annotation`() {
             val code = """
                 package config
@@ -853,6 +884,7 @@ class IgnoredReturnValueSpec {
         }
 
         @Test
+        @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
         fun `does not report when a function is annotated with the not included annotation`() {
             val code = """
                 package config
@@ -894,6 +926,7 @@ class IgnoredReturnValueSpec {
         val subject = IgnoredReturnValue(TestConfig("restrictToConfig" to false))
 
         @Test
+        @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
         fun `reports when a function is annotated with a custom annotation`() {
             val code = """
                 package config
@@ -965,6 +998,7 @@ class IgnoredReturnValueSpec {
         }
 
         @Test
+        @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
         fun `does not report when a function has _@CanIgnoreReturnValue_`() {
             val code = """
                 package foo
@@ -984,6 +1018,7 @@ class IgnoredReturnValueSpec {
         }
 
         @Test
+        @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
         fun `does not report when a function has a custom annotation`() {
             val code = """
                 package foo
@@ -1009,6 +1044,7 @@ class IgnoredReturnValueSpec {
         }
 
         @Test
+        @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
         fun `does not report when a function has a custom annotation on parent`() {
             val code = """
                 package foo

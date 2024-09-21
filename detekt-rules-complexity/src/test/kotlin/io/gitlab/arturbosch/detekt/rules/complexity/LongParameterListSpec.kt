@@ -5,6 +5,7 @@ import io.gitlab.arturbosch.detekt.test.TestConfig
 import io.gitlab.arturbosch.detekt.test.compileAndLintWithContext
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.kotlin.cli.jvm.compiler.KotlinCoreEnvironment
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
@@ -132,6 +133,7 @@ class LongParameterListSpec(private val env: KotlinCoreEnvironment) {
         private val rule = LongParameterList(config)
 
         @Test
+        @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
         fun `reports long parameter list for constructors if constructor parameters are annotated with annotation that is not ignored`() {
             val code = """
                 @Target(AnnotationTarget.VALUE_PARAMETER)
@@ -143,6 +145,7 @@ class LongParameterListSpec(private val env: KotlinCoreEnvironment) {
         }
 
         @Test
+        @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
         fun `reports long parameter list for functions if enough function parameters are annotated with annotation that is not ignored`() {
             val code = """
                 @Target(AnnotationTarget.VALUE_PARAMETER)
