@@ -3,6 +3,7 @@ package io.gitlab.arturbosch.detekt.rules.style
 import io.gitlab.arturbosch.detekt.api.Config
 import io.gitlab.arturbosch.detekt.test.assertThat
 import io.gitlab.arturbosch.detekt.test.compileAndLint
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
@@ -11,6 +12,7 @@ class UseArrayLiteralsInAnnotationsSpec {
     val subject = UseArrayLiteralsInAnnotations(Config.empty)
 
     @Test
+    @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
     fun `finds an arrayOf usage`() {
         val findings = subject.compileAndLint(
             """
@@ -24,6 +26,7 @@ class UseArrayLiteralsInAnnotationsSpec {
     }
 
     @Test
+    @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
     fun `finds intArrayOf usage`() {
         val code = """
             annotation class Test(val values: IntArray)
@@ -36,6 +39,7 @@ class UseArrayLiteralsInAnnotationsSpec {
     }
 
     @Test
+    @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
     fun `finds longArrayOf usage`() {
         val code = """
             annotation class Test(val values: LongArray)
@@ -60,6 +64,7 @@ class UseArrayLiteralsInAnnotationsSpec {
 
     @Test
     @DisplayName("expects [] syntax")
+    @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
     fun expectsBracketSyntax() {
         val findings = subject.compileAndLint(
             """

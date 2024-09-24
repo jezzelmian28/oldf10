@@ -4,6 +4,7 @@ import io.gitlab.arturbosch.detekt.api.Config
 import io.gitlab.arturbosch.detekt.test.TestConfig
 import io.gitlab.arturbosch.detekt.test.compileAndLint
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 class TrimMultilineRawStringSpec {
@@ -135,6 +136,7 @@ class TrimMultilineRawStringSpec {
     }
 
     @Test
+    @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
     fun `doesn't raise on annotation entry arguments`() {
         val code = """
             annotation class DisplayName(val s: String)

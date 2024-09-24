@@ -3,6 +3,7 @@ package io.gitlab.arturbosch.detekt.rules.style
 import io.gitlab.arturbosch.detekt.api.Config
 import io.gitlab.arturbosch.detekt.test.compileAndLint
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 class RedundantConstructorKeywordSpec {
@@ -32,7 +33,9 @@ class RedundantConstructorKeywordSpec {
         )
     }
 
-    @Test fun `report on class with annotated parameter`() {
+    @Test
+    @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
+    fun `report on class with annotated parameter`() {
         val code = """
             annotation class Ann
 
@@ -83,7 +86,9 @@ class RedundantConstructorKeywordSpec {
         assertThat(subject.compileAndLint(code)).isEmpty()
     }
 
-    @Test fun `does not report if annotated constructor`() {
+    @Test
+    @Disabled("https://youtrack.jetbrains.com/issue/KT-70931")
+    fun `does not report if annotated constructor`() {
         val code = """
             annotation class Ann           
 
