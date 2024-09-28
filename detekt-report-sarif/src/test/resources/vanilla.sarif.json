@@ -85,9 +85,6 @@
           "organization": "detekt",
           "rules": [
             {
-              "defaultConfiguration": {
-                "level": "error"
-              },
               "helpUri": "https://detekt.dev/test.html#testrule",
               "id": "detekt.test.TestRule",
               "name": "TestRule",
